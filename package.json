@@ -1,6 +1,6 @@
 {
   "name": "@joynow/prettier-plugin-svelte",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Svelte plugin for prettier",
   "main": "plugin.js",
   "files": [
@@ -15,7 +15,6 @@
     "build": "rollup -c",
     "test": "ava",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test",
     "debug": "pnpm build && prettier --write \"test/samples/**.svelte\""
   },
   "repository": {
