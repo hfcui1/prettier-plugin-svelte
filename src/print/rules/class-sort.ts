@@ -44,7 +44,7 @@ function classAttributeToArray(attribute: string) {
 }
 
 function ensureClassNameOrder(className: string, cssContent: string, cssOrderContent: string) {
-  const cssBlockReg = new RegExp(`.${className}\\s*{(\.\*?)}`)
+  const cssBlockReg = new RegExp(`.${className.replace(':', '\\\\:')}\\s*{(\.\*?)}`)
   const matchResult = cssContent.match(cssBlockReg)
 
   // 非原子Css，优先级最高
@@ -55,7 +55,7 @@ function ensureClassNameOrder(className: string, cssContent: string, cssOrderCon
   const blockCssContent = matchResult[1]
   const cssAttrbutes = classAttributeToArray(blockCssContent)
   const findHeightOrder = cssAttrbutes.reduce((preValue, attr) => {
-    const index = cssOrderContent.indexOf(attr)
+    const index = cssOrderContent.indexOf(`'${attr}'`)
     if (index > -1 && index < preValue) {
       preValue = index
     }

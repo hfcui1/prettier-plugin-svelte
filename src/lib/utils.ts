@@ -1,6 +1,5 @@
 import path from 'path'
 import fs from 'fs'
-import { EOL } from 'os';
 
 export function pathResolve(...paths: Array<string>) {
     return path.resolve(process.cwd(), ...paths)
@@ -18,7 +17,7 @@ export function concatFilesStr(paths: Array<string>) {
             console.log(new Error(`${fullPath} no found`))
             return preValue
         }
-        return preValue + fs.readFileSync(fullPath, { encoding: 'utf-8' }).toString().replace(new RegExp(EOL, 'g'), '')
+        return preValue + fs.readFileSync(fullPath, { encoding: 'utf-8' }).toString().replace(new RegExp('\\n', 'g'), '')
     }, '')
 }
 
