@@ -1,12 +1,16 @@
 {
-  "name": "prettier-plugin-svelte",
-  "version": "2.7.0",
+  "name": "@joynow/prettier-plugin-svelte",
+  "version": "0.0.1",
   "description": "Svelte plugin for prettier",
   "main": "plugin.js",
   "files": [
     "plugin.js",
     "plugin.js.map"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build": "rollup -c",
     "test": "ava",
