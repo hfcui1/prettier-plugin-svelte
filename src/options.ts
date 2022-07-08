@@ -10,6 +10,8 @@ export interface PluginOptions {
     svelteBracketNewLine: boolean;
     svelteAllowShorthand: boolean;
     svelteIndentScriptAndStyle: boolean;
+    svelteCssFiles: Array<string>;
+    svelteCssOrderFile: string;
 }
 
 function makeChoice(choice: string) {
@@ -87,6 +89,21 @@ export const options: Record<keyof PluginOptions, SupportOption> = {
         description:
             'Whether or not to indent the code inside <script> and <style> tags in Svelte files',
     },
+    svelteCssFiles: {
+        type: 'path',
+        category: 'Global',
+        array: true,
+        default: [{ value: '' }],
+        description: 'All atomic css files, used to find the properties inside',
+    },
+    svelteCssOrderFile: {
+        since: '1.0.0',
+        category: 'Svelte',
+        type: 'path',
+        default: '',
+        description:
+            'Define the configuration file for css order',
+    }
 };
 
 export type SortOrder =

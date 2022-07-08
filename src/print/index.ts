@@ -47,6 +47,7 @@ import {
     StyleDirectiveNode,
     TextNode,
 } from './nodes';
+import { classSortRule } from './rules';
 
 const {
     concat,
@@ -394,6 +395,10 @@ export function print(path: FastPath, options: ParserOptions, print: PrintFn): D
             return (node.expression as any).name;
         }
         case 'Attribute': {
+            if (node.name === 'class') {
+                const classDoc = classSortRule(node, print, options);
+                if (classDoc) return classDoc;
+            }
             if (isOrCanBeConvertedToShorthand(node)) {
                 if (options.svelteStrictMode) {
                     return concat([line, node.name, '="{', node.name, '}"']);

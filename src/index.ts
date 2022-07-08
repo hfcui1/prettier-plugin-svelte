@@ -1,4 +1,6 @@
 import { SupportLanguage, Parser, Printer } from 'prettier';
+import fs from 'fs'
+import { pathResolve, readFileToStr, concatFilesStr } from './lib/utils'
 import { print } from './print';
 import { ASTNode } from './print/nodes';
 import { embed } from './embed';
@@ -48,6 +50,8 @@ export const parsers: Record<string, Parser> = {
             // inside markdown), the originalText is not updated after preprocessing.
             // Therefore we do it ourselves here.
             options.originalText = text;
+            options.projectCssContent = options.svelteCssFiles.length > 0 ? concatFilesStr(options.svelteCssFiles) : ''
+            options.projectCssOrderContent = options.svelteCssOrderFile ? readFileToStr(options.svelteCssOrderFile) : ''
             return text;
         },
         locStart,

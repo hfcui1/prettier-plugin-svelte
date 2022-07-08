@@ -1,0 +1,179 @@
+html,
+body {
+  margin: 0;
+  font-family: var(--common-family);
+  background: #f8f8f9;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  font-weight: 400;
+}
+@media screen and (min-width: 640px) {
+  html,
+  body {
+    min-width: 1280px;
+  }
+}
+@media screen and (max-width: 640px) {
+  html,
+  body {
+    min-width: 100%;
+  }
+}
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+html[lang='ja-JP'] body {
+  font-family: BASE, 'Helvetica Neue', Hiragino Kaku Gothic Pro, Meiryo, Helvetica, PingFangSC, -apple-system, 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+}
+#sapper {
+  min-width: 100%;
+  min-height: 100%;
+  display: flex;
+}
+body a {
+  color: var(--blue);
+  text-decoration: none;
+}
+body a:hover {
+  color: var(--blue);
+  opacity: 0.8;
+}
+body img {
+  vertical-align: unset;
+}
+input.autofill:-webkit-autofill {
+  box-shadow: 0 0 0 1000px #fff inset;
+}
+h1 {
+  font-weight: var(--fw3);
+}
+h2 {
+  font-weight: var(--fw3);
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+li {
+  list-style: none;
+}
+input:disabled {
+  color: #ccc;
+}
+.iconfont {
+  font-family: 'phemex-icon' !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+.testnet {
+  display: inline-block;
+  margin-top: 17px;
+  margin-left: 10px;
+  border-radius: 12px;
+  padding: 0 10px;
+  line-height: 16px;
+  height: 16px;
+  vertical-align: top;
+  background: #ebaf1a;
+  color: #fff;
+  font-style: italic;
+  font-size: 12px;
+}
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
+/* 待处理 */
+
+.bt {
+  font-size: 24px;
+  line-height: 32px;
+  color: #000;
+  text-align: left;
+  margin-bottom: 20px;
+}
+.fr {
+  float: right;
+  font-size: 14px;
+}
+.fl {
+  float: left;
+}
+.cb {
+  clear: both;
+  line-height: 40px;
+}
+.lw {
+  width: 150px;
+}
+.dh {
+  height: 200px;
+}
+.ipa {
+  position: absolute;
+  right: 13px;
+  margin-top: -28px;
+}
+.ah {
+  color: #acacac;
+  cursor: default;
+}
+.tl {
+  text-align: left;
+}
+.czjz {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+}
+.correct {
+  color: #dc4a45;
+}
+.backLeft {
+  font-size: 10px;
+  transform: rotate(180deg);
+  -moz-transform: rotate(180deg); /* Firefox */
+  -webkit-transform: rotate(180deg); /* Safari 和 Chrome */
+}
+.backSpan {
+  display: inline-block;
+  margin-left: 18px;
+}
+
+/* scrollview */
+.sv {
+  /* firefox*/
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+.dark .sv {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+.sv::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: transparent;
+}
+.sv:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.dark .sv:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.sv::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+.p0 {
+  padding: 0;
+  margin: 0;
+}
+.ch {
+  cursor: help;
+}

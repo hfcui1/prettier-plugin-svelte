@@ -1,0 +1,82 @@
+/* 变量定义 */
+:root {
+  --B0: #f8f8f8;
+  --B1: #fff;
+  --B1H: #f8f8f8;
+  --B2: #f0f0f0;
+  --B3: #fff; /* popup background */
+  --B3H: #f8f8f8; /* popup background hover */
+  --B4: #f8f8f8;
+
+  --T1: #010612;
+  --T2: #303236;
+  --T3: #676b72;
+  --T4: #9fa3ab;
+  --T5: #c5c8ce;
+  --T6: #dbdfe7;
+  --TW: #fff;
+
+  --BD: #f1f1f1;
+
+  --blue: #003fe6;
+  --buy: #1cc198;
+  --sell: #ff6666;
+
+  --ASK1: #fdf2f2;
+  --ASK2: #f9e5e4;
+  --BID1: #f1fbf8;
+  --BID2: #e3f7f1;
+  --UPF: #b9f0e3; /* up flash */
+  --DWF: #fcc6c6; /* down flash */
+  --RTF: #edf1f7; /* recent trade flash */
+}
+
+.T1 {
+  color: var(--T1);
+}
+.T2 {
+  color: var(--T2);
+}
+.T3 {
+  color: var(--T3);
+}
+.T4 {
+  color: var(--T4);
+}
+.TW {
+  color: var(--TW);
+}
+
+.B1 {
+  background: var(--B1);
+}
+.B2 {
+  background: var(--B2);
+}
+.B3 {
+  background: var(--B3);
+}
+.B4 {
+  background: var(--B4);
+}
+
+/* 语义化样式定义 */
+.up,
+.buy {
+  color: var(--buy);
+}
+.down,
+.sell {
+  color: var(--sell);
+}
+
+.BLUE {
+  color: var(--blue);
+}
+
+.c3398 {
+  color: #003398;
+}
+.cf {
+  color: #fff;
+}
