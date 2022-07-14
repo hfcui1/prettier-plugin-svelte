@@ -3,13 +3,15 @@ import fs from 'fs'
 import os from 'os'
 
 export function pathResolve(...paths: Array<string>) {
-    const cwd = process.cwd()
-    return path.resolve(cwd === '/' ? __dirname : cwd, ...paths)
+    return path.resolve(workspace, ...paths)
 }
 
 export function isArray<T = unknown>(value: unknown): value is Array<T> {
     return Array.isArray(value);
 }
+
+const workspaceMath =  __dirname.match(/^(?<workspace>.*?)\/node_modules/)
+export const workspace = process.cwd() === '/' ? workspaceMath !== null ? (workspaceMath.groups as any).workspace : process.cwd() : process.cwd()
 
 export function concatFilesStr(paths: Array<string>) {
     return paths.reduce((preValue, _path) => {
