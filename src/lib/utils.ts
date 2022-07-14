@@ -11,7 +11,7 @@ export function isArray<T = unknown>(value: unknown): value is Array<T> {
 }
 
 const workspaceMath =  __dirname.match(/^(?<workspace>.*?)\/node_modules/)
-export const workspace = process.cwd() === '/' ? workspaceMath !== null ? (workspaceMath.groups as any).workspace : process.cwd() : process.cwd()
+export const workspace = process.cwd() === '/' ? workspaceMath !== null ? (workspaceMath.groups as any).workspace : __dirname : process.cwd()
 
 export function concatFilesStr(paths: Array<string>) {
     return paths.reduce((preValue, _path) => {

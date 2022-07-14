@@ -55,7 +55,7 @@ function ensureClassNameOrder(className: string, cssContent: string, cssOrderCon
   const blockCssContent = matchResult[1]
   const cssAttrbutes = classAttributeToArray(blockCssContent)
   const findHeightOrder = cssAttrbutes.reduce((preValue, attr) => {
-    const index = cssOrderContent.indexOf(`'${attr}'`)
+    const index = cssOrderContent.indexOf(`${attr}`)
     if (index > -1 && index < preValue) {
       preValue = index
     }
