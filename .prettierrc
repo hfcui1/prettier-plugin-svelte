@@ -7,6 +7,9 @@
   "svelteSortOrder": "scripts-styles-options-markup",
   "svelteCssFiles": ["test/samples/css/action.css", "test/samples/css/base.css", "test/samples/css/colors.css", "test/samples/css/font.css", "test/samples/css/layout.css"],
   "svelteCssOrderFile": "test/samples/cmexpro.mjs",
+  "svelteImportOrderDirs": ["const", "config", "emum", "map,", "core", "helper", "storage", "store", "formula", "da", "api", "directives", "icons", "modules", "widgets", "observable", "streams"],
+  "svelteImportOrderFiles": ["const", "consts", "until", "untils", "streams", "*.svelte", "*.lang"],
+  "pathAlias": ["@"],
   "plugins": ["./plugin.js"],
   "parser": "svelte"
 }

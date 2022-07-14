@@ -1,4 +1,6 @@
 <script>
+  import {of} from 'rxjs';
+  import {map} from 'rxjs/operators';
   import {getContext} from 'svelte';
   import {fullImageUrlFun} from '@/helper/url';
   import Button from '@/widgets/Button.svelte';
@@ -61,48 +63,7 @@
   }
 </script>
 
-<style>
-  .mt0 {
-    margin-top: 0;
-  }
-  .ml8 {
-    margin-left: 8px;
-  }
-  .f11 {
-    font-size: 11px;
-  }
-  .trader-item {
-    padding: 16px 20px;
-    border: 1px solid #f2f3f6;
-  }
-  .trader-avatar {
-    width: 60px;
-    height: 60px;
-  }
-  .shut-icon.pack-up {
-    transform: rotate(180deg);
-  }
-  .trader-header.expand {
-    border-bottom: 1px solid #f2f3f6;
-    padding-bottom: 16px;
-  }
-  .va-btn :global(button) {
-    border: 1px solid #dbdfe7;
-    border-radius: 8px;
-    height: 40px;
-    color: var(--T1);
-    font-weight: var(--fw2);
-  }
-  .no-position {
-    padding: 28px 0 12px;
-  }
-  @media screen and (max-width: 640px) {
-    .trader-avatar {
-      width: 24px;
-      height: 24px;
-    }
-  }
-</style>
+<style></style>
 
 <div class="trader-item mt20 br12 B1">
   <div class="trader-header df aic" class:expand={currentShowRealPosition}>
@@ -110,11 +71,11 @@
     <div class="f1 ml12 ooo">
       <span class="mt0 mb8 b f18 cp ooo" on:click={handleOverviewClick}>{trader.nickName}</span>
     </div>
-    <div class="df aic T3 fw2 cp" on:click={handleHeaderCLick}>
+    <div class="df aic fw2 T3 cp" on:click={handleHeaderCLick}>
       <div class="f14">
         {isHavePosition ? LG(lang.CurrentPosition) : LG(lang.NoPosition)}
       </div>
-      <i class="f11 ml8 iconfont shut-icon" class:pack-up={!currentShowRealPosition}>&#xe608;</i>
+      <i class="f11 shut-icon ml8 iconfont" class:pack-up={!currentShowRealPosition}>&#xe608;</i>
     </div>
   </div>
   {#if currentShowRealPosition}
@@ -122,7 +83,7 @@
       {#each showPositions || [] as position (position.positionId)}
         <Position {position} />
       {:else}
-        <div class="no-position df jcc T4 f14 fw2">{LG(lang.NoPosition)}</div>
+        <div class="no-position df jcc fw2 f14 T4">{LG(lang.NoPosition)}</div>
       {/each}
       {#if (trader.currentPositions || []).length > 3 && !isFullStatus}
         <div class="va-btn df jcc mt20" on:click={hanleViewAllClick}>

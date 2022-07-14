@@ -42,7 +42,7 @@ export const parsers: Record<string, Parser> = {
             }
         },
         preprocess: (text, options) => {
-            text = snipScriptAndStyleTagContent(text);
+            text = snipScriptAndStyleTagContent(text, options);
             text = text.trim();
             // Prettier sets the preprocessed text as the originalText in case
             // the Svelte formatter is called directly. In case it's called

@@ -12,6 +12,9 @@ export interface PluginOptions {
     svelteIndentScriptAndStyle: boolean;
     svelteCssFiles: Array<string>;
     svelteCssOrderFile: string;
+    pathAlias: Array<string>;
+    svelteImportOrderDirs: Array<string>;
+    svelteImportOrderFiles: Array<string>;
 }
 
 function makeChoice(choice: string) {
@@ -103,7 +106,28 @@ export const options: Record<keyof PluginOptions, SupportOption> = {
         default: '',
         description:
             'Define the configuration file for css order',
-    }
+    },
+    pathAlias: {
+        type: 'path',
+        category: 'Global',
+        array: true,
+        default: [{ value: '' }],
+        description: 'Path Alias',
+    },
+    svelteImportOrderDirs: {
+        type: 'path',
+        category: 'Global',
+        array: true,
+        default: [{ value: '' }],
+        description: 'import order sort rules',
+    },
+    svelteImportOrderFiles: {
+        type: 'path',
+        category: 'Global',
+        array: true,
+        default: [{ value: '' }],
+        description: 'import order sort rules',
+    },
 };
 
 export type SortOrder =

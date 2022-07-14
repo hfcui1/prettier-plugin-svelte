@@ -1,6 +1,17 @@
+import { init, parse } from 'es-module-lexer'
+import { ParserOptions } from 'prettier';
+import { importSort } from '../print/rules'
+import { concatStr } from './utils'
+import MagicString from 'magic-string';
+
 export const snippedTagContentAttribute = '✂prettier:content✂';
 
-export function snipScriptAndStyleTagContent(source: string): string {
+let inited = false
+init.then(() => {
+    inited = true
+})
+
+export function snipScriptAndStyleTagContent(source: string, options: ParserOptions): string {
     let scriptMatchSpans = getMatchIndexes('script');
     let styleMatchSpans = getMatchIndexes('style');
 
@@ -34,10 +45,19 @@ export function snipScriptAndStyleTagContent(source: string): string {
         let newStyleMatchSpans = styleMatchSpans;
         // Replace valid matches
         const newSource = _source.replace(regex, (match, attributes, content, index) => {
+            let newContentStr = content
             if (match.startsWith('<!--') || withinOtherSpan(index)) {
                 return match;
             }
-            const encodedContent = Buffer.from(content).toString('base64');
+            if (tagName === 'script' && inited) {
+                debugger
+                const imports = parse(content)[0]
+                const newImports = importSort(imports, content, options)
+                const importStr = concatStr(newImports)
+                const magicString = new MagicString(content)
+                newContentStr = magicString.overwrite(imports[0].ss, imports[imports.length - 1].se, importStr).toString()
+            }
+            const encodedContent = Buffer.from(newContentStr).toString('base64');
             const newContent = `<${tagName}${attributes} ${snippedTagContentAttribute}="${encodedContent}">${placeholder}</${tagName}>`;
 
             // Adjust the spans because the source now has a different content length

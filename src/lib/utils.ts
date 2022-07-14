@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import os from 'os'
 
 export function pathResolve(...paths: Array<string>) {
     return path.resolve(process.cwd(), ...paths)
@@ -30,4 +31,11 @@ export function readFileToStr(_path: string) {
     }
 
     return fs.readFileSync(fullPath, { encoding: 'utf-8' }).toString()
+}
+
+export function concatStr(list: string[]) {
+    return list.reduce((preValue, item) => {
+        preValue += `${item}${os.EOL}`
+        return preValue
+    }, '')
 }
