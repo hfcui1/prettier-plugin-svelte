@@ -3,7 +3,8 @@ import fs from 'fs'
 import os from 'os'
 
 export function pathResolve(...paths: Array<string>) {
-    return path.resolve(process.cwd(), ...paths)
+    const cwd = process.cwd()
+    return path.resolve(cwd === '/' ? __dirname : cwd, ...paths)
 }
 
 export function isArray<T = unknown>(value: unknown): value is Array<T> {
