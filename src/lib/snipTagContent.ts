@@ -1,13 +1,13 @@
+import { init, parse } from 'es-module-lexer'
 import { ParserOptions } from 'prettier';
 import { importSort } from '../print/rules'
 import { concatStr } from './utils'
 import MagicString from 'magic-string';
-import { createSyncFn } from 'sync-threads'
 import path from 'path'
 
+let inited = false
+init.then(() => inited = true)
 export const snippedTagContentAttribute = '✂prettier:content✂';
-
-const getEsModuleContent = createSyncFn(path.resolve(__dirname, './worker.js'))
 
 export function snipScriptAndStyleTagContent(source: string, options: ParserOptions): string {
     let scriptMatchSpans = getMatchIndexes('script');
@@ -47,9 +47,8 @@ export function snipScriptAndStyleTagContent(source: string, options: ParserOpti
             if (match.startsWith('<!--') || withinOtherSpan(index)) {
                 return match;
             }
-            if (tagName === 'script') {
-                debugger
-                const imports = getEsModuleContent(content)[0]
+            if (tagName === 'script' && inited) {
+                const imports = parse(content)[0]
                 const newImports = importSort(imports, content, options)
                 const importStr = concatStr(newImports)
                 const magicString = new MagicString(content)

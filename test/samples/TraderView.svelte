@@ -1,95 +1,160 @@
 <script>
-  import {of} from 'rxjs';
-  import {map} from 'rxjs/operators';
+  import {parse} from 'query-string';
   import {getContext} from 'svelte';
-  import {fullImageUrlFun} from '@/helper/url';
-  import Button from '@/widgets/Button.svelte';
-  import {linkToTraderOverview} from '../../utils';
-  import Position from './PositionView.svelte';
-  import lang from '../../CopyTradingListPage.lang';
-
-  export let trader = {};
-  export let showRealPositon;
+  import {fade} from 'svelte/transition';
+  import Spin from '@/widgets/Spin.svelte';
+  import Tab from '@/widgets/Tab.svelte';
+  import {tabMode, tabModeMap, pathModeMap} from './utils';
+  import {followingTradersPageNum$, followingTradersState$, recommendTradersPageNum$, copyTradeTab$} from './streams';
+  import Banner from './components/banner/Banner.svelte';
+  import FollowTraders from './components/follow-traders/FollowTradersView.svelte';
+  import RecommendTraders from './components/recommend-traders/RecommendTradersView.svelte';
+  import lang from './CopyTradingListPage.lang';
 
   const LG = getContext('LG');
-  const fullImageUrl = fullImageUrlFun();
+  const tabOptions = [
+    {label: LG(lang.Following), value: tabMode.follow},
+    {label: LG(lang.Recommend), value: tabMode.recommend},
+  ];
+  $: process.browser && updateCurrentTab($followingTradersState$);
 
-  let showPositions = [];
-  let isFullStatus = false;
-  let isHavePosition = false;
-  let currentShowRealPosition = false;
+  function updateCurrentTab(followingTradersState) {
+    const tab1 = getTabByUrl();
+    const tab2 = getTabByFollowingState(followingTradersState);
 
-  $: updateShowPositions(isFullStatus, trader);
-  $: updateIsHavePosition(trader);
-  $: updateCurrentShowRealPosition(showRealPositon, isHavePosition);
-
-  function updateShowPositions(isFullStatus, trader) {
-    const currentPositions = trader.currentPositions || [];
-    if (isFullStatus) {
-      showPositions = currentPositions;
-      return;
-    }
-
-    showPositions = currentPositions.slice(0, 3);
+    copyTradeTab$.next(tab1 || tab2 || '');
   }
 
-  function updateIsHavePosition(trader) {
-    isHavePosition = (trader.currentPositions || []).length > 0;
+  function getTabByUrl() {
+    const searchT = parse(window.location.search).t;
+    return pathModeMap[searchT];
   }
 
-  function updateCurrentShowRealPosition(showRealPositon, isHavePosition) {
-    // 收起状态：对任何一个交易员都起作用
-    if (!showRealPositon) {
-      currentShowRealPosition = false;
-      return;
-    }
-
-    // 展开状态：仅对有仓位的交易员起作用
-    if (isHavePosition) {
-      currentShowRealPosition = true;
+  function getTabByFollowingState(followingTradersState) {
+    const {loading, total} = followingTradersState;
+    if (!loading) {
+      const {follow, recommend} = tabMode;
+      return total > 0 ? follow : recommend;
     }
   }
 
-  function handleHeaderCLick() {
-    currentShowRealPosition = !currentShowRealPosition;
+  function handleTabClickFun(tabValue) {
+    return function () {
+      copyTradeTab$.next(tabValue);
+
+      refreshList(tabValue);
+      recordTab(tabValue);
+    };
   }
 
-  function hanleViewAllClick() {
-    handleOverviewClick();
+  function recordTab(tabValue) {
+    history.replaceState({}, '', `${location.pathname}?t=${tabModeMap[tabValue]}`);
   }
 
-  function handleOverviewClick() {
-    linkToTraderOverview(trader.userId);
+  function refreshList(tabValue) {
+    const {follow, recommend} = tabMode;
+
+    if (tabValue === follow) {
+      followingTradersPageNum$.next(followingTradersPageNum$.getValue());
+    }
+    if (tabValue === recommend) {
+      recommendTradersPageNum$.next(recommendTradersPageNum$.getValue());
+    }
   }
 </script>
 
-<style></style>
+<style>
+  .container {
+    background: #fdfefe;
+  }
+  .main {
+    width: 1200px;
+    margin: 0 auto;
+  }
+  .menu-wrap {
+    padding-top: 17px;
+  }
+  .menu-wrap::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+    height: 1px;
+    background: #f2f3f6;
+  }
+  .menu-wrap :global(.wrap) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .menu-wrap :global(.wrap + .wrap) {
+    padding-left: 0 !important;
+    margin-left: 36px;
+  }
+  .menu-wrap :global(.active::after) {
+    bottom: -3px;
+    height: 3px;
+  }
+  .loading-box {
+    height: 500px;
+  }
+  .main {
+    min-height: 500px;
+  }
+  .container :global(.pagination li) {
+    border: 1px solid #f1f2f5;
+    border-radius: 4px;
+    min-width: 30px;
+    width: auto;
+    height: 30px;
+    background: var(--B1);
+    color: var(--T4);
+    font-weight: var(--fw2);
+  }
+  .container :global(.pagination li.active) {
+    background: #003fe6;
+    color: var(--TW);
+  }
+  @media screen and (max-width: 640px) {
+    .main {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 14px;
+    }
+    .main :global(.fdr) {
+      padding: 16px 0;
+    }
+    .container {
+      background: transparent;
+    }
+    .menu-wrap {
+      padding-top: 0;
+    }
+  }
+</style>
 
-<div class="trader-item mt20 br12 B1">
-  <div class="trader-header df aic" class:expand={currentShowRealPosition}>
-    <img src={fullImageUrl(trader.avatar)} class="trader-avatar brp50 cp" width="60" height="60" alt="phemex" on:click={handleOverviewClick} />
-    <div class="f1 ml12 ooo">
-      <span class="mt0 mb8 b f18 cp ooo" on:click={handleOverviewClick}>{trader.nickName}</span>
-    </div>
-    <div class="df aic T3 fw2 cp" on:click={handleHeaderCLick}>
-      <div class="f14">
-        {isHavePosition ? LG(lang.CurrentPosition) : LG(lang.NoPosition)}
-      </div>
-      <i class="f11 shut-icon ml8 iconfont" class:pack-up={!currentShowRealPosition}>&#xe608;</i>
-    </div>
-  </div>
-  {#if currentShowRealPosition}
-    <div class="position-wrap">
-      {#each showPositions || [] as position (position.positionId)}
-        <Position {position} />
-      {:else}
-        <div class="no-position df jcc T4 f14 fw2">{LG(lang.NoPosition)}</div>
+<Banner />
+<div class="container">
+  <main class="main">
+    <div class="menu-wrap pr df aic">
+      {#each tabOptions as tab}
+        <Tab active={$copyTradeTab$ === tab.value} on:click={handleTabClickFun(tab.value)}>
+          <div class="b f20">{tab.label}</div>
+        </Tab>
       {/each}
-      {#if (trader.currentPositions || []).length > 3 && !isFullStatus}
-        <div class="va-btn df jcc mt20" on:click={hanleViewAllClick}>
-          <Button newRadius size="small">{LG(lang.ViewAll)}</Button>
-        </div>
-      {/if}
     </div>
-  {/if}
+
+    {#if $followingTradersState$.loading !== false}
+      <div class="loading-box jsc df aic">
+        <Spin style="" />
+      </div>
+    {/if}
+
+    <div hidden={$copyTradeTab$ !== tabMode.follow} in:fade>
+      <FollowTraders />
+    </div>
+    <div hidden={$copyTradeTab$ !== tabMode.recommend} in:fade>
+      <RecommendTraders />
+    </div>
+  </main>
 </div>
