@@ -5,7 +5,7 @@ import typescript from 'rollup-plugin-typescript';
 export default [{
     input: 'src/index.ts',
     plugins: [resolve(), commonjs(), typescript()],
-    external: ['prettier', 'svelte'],
+    external: ['prettier', 'svelte', 'worker_threads'],
     output: {
         file: 'plugin.js',
         format: 'cjs',
@@ -14,7 +14,7 @@ export default [{
 }, {
     input: 'src/worker.ts',
     plugins: [resolve(), commonjs(), typescript()],
-    external: ['prettier', 'svelte'],
+    external: ['prettier', 'svelte', 'worker_threads'],
     output: {
         file: 'worker.js',
         format: 'cjs',

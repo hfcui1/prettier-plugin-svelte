@@ -5,6 +5,7 @@ import {isArray} from '../../lib/utils';
 const {concat, join, line, group, indent, dedent, softline, hardline, fill, breakParent, literalline} = doc.builders;
 
 export function classSortRule(node: AttributeNode, print: (_path: FastPath) => Doc, options: ParserOptions) {
+  debugger
   if (isArray(node.value)) {
     const textNode = node.value?.[0];
     if (textNode.type === 'Text') {

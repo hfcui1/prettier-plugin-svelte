@@ -11,5 +11,12 @@
   "svelteImportOrderFiles": ["const", "consts", "until", "untils", "streams", "*.svelte", "*.lang"],
   "pathAlias": ["@"],
   "plugins": ["./plugin.js"],
-  "parser": "svelte"
+  "overrides": [
+    {
+      "files": ["*.svelte"],
+      "options": {
+        "parser": "svelte"
+      }
+    }
+  ]
 }
