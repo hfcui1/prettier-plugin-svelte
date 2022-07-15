@@ -3,10 +3,11 @@ import { importSort } from '../print/rules'
 import { concatStr } from './utils'
 import MagicString from 'magic-string';
 import { createSyncFn } from 'sync-threads'
+import path from 'path'
 
 export const snippedTagContentAttribute = '✂prettier:content✂';
 
-const getEsModuleContent = createSyncFn('./worker.js')
+const getEsModuleContent = createSyncFn(path.resolve(__dirname, './worker.js'))
 
 export function snipScriptAndStyleTagContent(source: string, options: ParserOptions): string {
     let scriptMatchSpans = getMatchIndexes('script');
