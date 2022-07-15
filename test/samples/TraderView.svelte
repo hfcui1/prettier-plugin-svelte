@@ -71,7 +71,7 @@
     <div class="f1 ml12 ooo">
       <span class="mt0 mb8 b f18 cp ooo" on:click={handleOverviewClick}>{trader.nickName}</span>
     </div>
-    <div class="df aic fw2 T3 cp" on:click={handleHeaderCLick}>
+    <div class="df aic T3 fw2 cp" on:click={handleHeaderCLick}>
       <div class="f14">
         {isHavePosition ? LG(lang.CurrentPosition) : LG(lang.NoPosition)}
       </div>
@@ -83,7 +83,7 @@
       {#each showPositions || [] as position (position.positionId)}
         <Position {position} />
       {:else}
-        <div class="no-position df jcc fw2 f14 T4">{LG(lang.NoPosition)}</div>
+        <div class="no-position df jcc T4 f14 fw2">{LG(lang.NoPosition)}</div>
       {/each}
       {#if (trader.currentPositions || []).length > 3 && !isFullStatus}
         <div class="va-btn df jcc mt20" on:click={hanleViewAllClick}>
