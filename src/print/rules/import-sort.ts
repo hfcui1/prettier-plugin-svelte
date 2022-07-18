@@ -47,7 +47,6 @@ export function importSort(imports: readonly ImportSpecifier[], content: string,
     return compareStr(cleanPathString(pathStrA), cleanPathString(pathStrB))
   })
   const newLocals = locals.sort((importSpecifierA, importSpecifierB) => {
-    debugger
     const importPathA = importSpecifierA.n || ''
     const importPathB = importSpecifierB.n || ''
 

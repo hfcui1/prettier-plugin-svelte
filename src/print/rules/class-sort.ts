@@ -5,7 +5,6 @@ import {isArray} from '../../lib/utils';
 const {concat, join, line, group, indent, dedent, softline, hardline, fill, breakParent, literalline} = doc.builders;
 
 export function classSortRule(node: AttributeNode, print: (_path: FastPath) => Doc, options: ParserOptions) {
-  debugger
   if (isArray(node.value)) {
     const textNode = node.value?.[0];
     if (textNode.type === 'Text') {
@@ -56,7 +55,8 @@ function ensureClassNameOrder(className: string, cssContent: string, cssOrderCon
   const blockCssContent = matchResult[1]
   const cssAttrbutes = classAttributeToArray(blockCssContent)
   const findHeightOrder = cssAttrbutes.reduce((preValue, attr) => {
-    const index = cssOrderContent.indexOf(`${attr}`)
+    const matchResult = cssOrderContent.match(new RegExp(`[^-]${attr}[^-]`))
+    const index = matchResult ? matchResult.index || 0 : -1
     if (index > -1 && index < preValue) {
       preValue = index
     }
