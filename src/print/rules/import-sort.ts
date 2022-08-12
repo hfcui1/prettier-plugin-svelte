@@ -2,6 +2,8 @@ import MagicString from 'magic-string';
 import { ImportSpecifier } from 'es-module-lexer'
 import { ParserOptions } from 'prettier'
 
+const specialLibraries = ['svelte', 'rxjs']
+
 export function importSort(imports: readonly ImportSpecifier[], content: string, options: ParserOptions) {
   const libraries: ImportSpecifier[] = []
   const globals: ImportSpecifier[] = []
@@ -24,7 +26,7 @@ export function importSort(imports: readonly ImportSpecifier[], content: string,
   const globalItemRegexp = /^(?<alias>.*?)\/(?<path>(?<dir>.*?)[\/$](.*\/(?<deepFileName>.*$)|(?<shadowFileName>.*$)))/
   const localItemRegexp = /.*\/(?<fileName>.*)$/
 
-  const newLibraries = libraries.sort((importSpecifierA, importSpecifierB) => compareStr(cleanPathString(importSpecifierA.n || ''), cleanPathString(importSpecifierB.n || '')))
+  const newLibraries = libraries.sort((importSpecifierA, importSpecifierB) => sortSpecialImports(importSpecifierA.n || '', importSpecifierB.n || '') || compareStr(cleanPathString(importSpecifierA.n || ''), cleanPathString(importSpecifierB.n || '')))
   const newGlobals = globals.sort((importSpecifierA, importSpecifierB) => {
     const importPathA = importSpecifierA.n || ''
     const importPathB = importSpecifierB.n || ''
@@ -97,6 +99,23 @@ function compareFile(fileA: string, fileB: string, svelteImportOrderFiles: Parse
   const orderIndexB = svelteImportOrderFiles.findIndex(configName => matchFile(fileB, configName))
   return orderIndexA - orderIndexB
 }
+
+function sortSpecialImports(importSpecifierA: string, importSpecifierB: string) {
+  const specifierA = specialLibraries.findIndex(library => new RegExp(`^${library}`).test(importSpecifierA))
+  const specifierB = specialLibraries.findIndex(library => new RegExp(`^${library}`).test(importSpecifierB))
+
+  if (specifierA === -1 && specifierB === -1) {
+    return 0
+  }
+  if (specifierA === -1) {
+    return 1
+  }
+  if (specifierB === -1) {
+    return -1
+  }
+  return specifierA - specifierB
+}
+
 function compareStr(strA: string, strB: string) {
   return strA.localeCompare(strB)
 }

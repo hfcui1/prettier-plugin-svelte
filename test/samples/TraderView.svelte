@@ -1,7 +1,8 @@
 <script>
-  import {parse} from 'query-string';
   import {getContext} from 'svelte';
   import {fade} from 'svelte/transition';
+  import {map} from 'rxjs';
+  import {parse} from 'query-string';
   import Spin from '@/widgets/Spin.svelte';
   import Tab from '@/widgets/Tab.svelte';
   import {tabMode, tabModeMap, pathModeMap} from './utils';
