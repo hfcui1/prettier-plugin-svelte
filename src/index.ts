@@ -1,4 +1,5 @@
 import { SupportLanguage, Parser, Printer } from 'prettier';
+import { parsers as babelParsers } from 'prettier/parser-babel';
 import fs from 'fs'
 import { pathResolve, readFileToStr, concatFilesStr } from './lib/utils'
 import { print } from './print';
@@ -67,17 +68,14 @@ export const parsers: Record<string, Parser> = {
         locEnd,
         astFormat: 'svelte-ast',
     },
-    importJs: {
+    babel: {
+        ...babelParsers.babel,
         preprocess: (text, options) => {
             text = resolveJsImportsContent(text, options)
             text = text.trim();
             options.originalText = text;
             return text;
         },
-        parse: (text) => text,
-        locStart,
-        locEnd,
-        astFormat: 'javascript-ast',
     }
 };
 
@@ -86,10 +84,6 @@ export const printers: Record<string, Printer> = {
         print,
         embed,
     },
-    'javascript-ast': {
-        print: jsPrint,
-        embed: jsEmbed
-    }
 };
 
 export { options } from './options';
