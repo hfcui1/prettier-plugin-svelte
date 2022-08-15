@@ -3,7 +3,6 @@ import { ParserOptions } from 'prettier';
 import { importSort } from '../print/rules'
 import { concatStr } from './utils'
 import MagicString from 'magic-string';
-import path from 'path'
 
 let inited = false
 init.then(() => inited = true)

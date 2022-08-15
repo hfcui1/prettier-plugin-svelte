@@ -1,16 +1,9 @@
 <script>
-  import {getContext} from 'svelte';
-  import {fade} from 'svelte/transition';
-  import {map} from 'rxjs';
-  import {parse} from 'query-string';
-  import Spin from '@/widgets/Spin.svelte';
-  import Tab from '@/widgets/Tab.svelte';
-  import {tabMode, tabModeMap, pathModeMap} from './utils';
-  import {followingTradersPageNum$, followingTradersState$, recommendTradersPageNum$, copyTradeTab$} from './streams';
-  import Banner from './components/banner/Banner.svelte';
-  import FollowTraders from './components/follow-traders/FollowTradersView.svelte';
-  import RecommendTraders from './components/recommend-traders/RecommendTradersView.svelte';
-  import lang from './CopyTradingListPage.lang';
+  import {Subject, BehaviorSubject} from 'rxjs';
+  import {switchMap} from 'rxjs/operators';
+  import {mc} from '@/core';
+  import {userApi} from '@/api';
+  import {fiatCurrency$} from './fiat-currency';
 
   const LG = getContext('LG');
   const tabOptions = [

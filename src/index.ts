@@ -2,9 +2,12 @@ import { SupportLanguage, Parser, Printer } from 'prettier';
 import fs from 'fs'
 import { pathResolve, readFileToStr, concatFilesStr } from './lib/utils'
 import { print } from './print';
+import { print as jsPrint } from './print/js-print'
 import { ASTNode } from './print/nodes';
 import { embed } from './embed';
+import { embed as jsEmbed } from './js-embed';
 import { snipScriptAndStyleTagContent } from './lib/snipTagContent';
+import { resolveJsImportsContent } from './lib/resolveJsImportsContent'
 
 function locStart(node: any) {
     return node.start;
@@ -20,6 +23,12 @@ export const languages: Partial<SupportLanguage>[] = [
         parsers: ['svelte'],
         extensions: ['.svelte'],
         vscodeLanguageIds: ['svelte'],
+    },
+    {
+        name: 'importJs',
+        parsers: ['importJs'],
+        extensions: ['.js'],
+        vscodeLanguageIds: ['javascript'],
     },
 ];
 
@@ -58,6 +67,18 @@ export const parsers: Record<string, Parser> = {
         locEnd,
         astFormat: 'svelte-ast',
     },
+    importJs: {
+        preprocess: (text, options) => {
+            text = resolveJsImportsContent(text, options)
+            text = text.trim();
+            options.originalText = text;
+            return text;
+        },
+        parse: (text) => text,
+        locStart,
+        locEnd,
+        astFormat: 'javascript-ast',
+    }
 };
 
 export const printers: Record<string, Printer> = {
@@ -65,6 +86,10 @@ export const printers: Record<string, Printer> = {
         print,
         embed,
     },
+    'javascript-ast': {
+        print: jsPrint,
+        embed: jsEmbed
+    }
 };
 
 export { options } from './options';

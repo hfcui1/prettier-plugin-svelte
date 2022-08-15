@@ -17,6 +17,12 @@
       "options": {
         "parser": "svelte"
       }
+    },
+    {
+      "files": ["*.js"],
+      "options": {
+        "parser": "importJs"
+      }
     }
   ]
 }

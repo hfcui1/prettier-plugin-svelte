@@ -36,9 +36,9 @@ export function readFileToStr(_path: string) {
     return fs.readFileSync(fullPath, { encoding: 'utf-8' }).toString()
 }
 
-export function concatStr(list: string[]) {
+export function concatStr(list: string[], semi: boolean) {
     return list.reduce((preValue, item) => {
-        preValue += `${item}${os.EOL}`
+        preValue += `${item}${semi ? ';' : ''}${os.EOL}`
         return preValue
     }, '')
 }
