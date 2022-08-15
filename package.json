@@ -1,6 +1,6 @@
 {
   "name": "@joynow/prettier-plugin-svelte",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "Svelte plugin for prettier",
   "main": "plugin.js",
   "files": [
