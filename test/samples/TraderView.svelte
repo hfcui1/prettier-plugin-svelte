@@ -5,6 +5,7 @@
   import {userApi} from '@/api';
   import {fiatCurrency$} from './fiat-currency';
 
+  const className = 'test';
   const LG = getContext('LG');
   const tabOptions = [
     {label: LG(lang.Following), value: tabMode.follow},
@@ -128,7 +129,7 @@
 </style>
 
 <Banner />
-<div class="container">
+<div class="container {className} {className}">
   <main class="main">
     <div class="menu-wrap pr df aic">
       {#each tabOptions as tab}
@@ -139,7 +140,7 @@
     </div>
 
     {#if $followingTradersState$.loading !== false}
-      <div class="loading-box jsc df aic">
+      <div class="jsc loading-box df aic">
         <Spin style="" />
       </div>
     {/if}

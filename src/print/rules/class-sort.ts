@@ -6,33 +6,57 @@ const {concat, join, line, group, indent, dedent, softline, hardline, fill, brea
 
 export function classSortRule(node: AttributeNode, print: (_path: FastPath) => Doc, options: ParserOptions) {
   if (isArray(node.value)) {
-    const textNode = node.value?.[0];
-    if (textNode.type === 'Text') {
-      const classNameList = classRowDataToArray(textNode.data)
+    const { textDoc, mustacheTagDoc } = node.value.reduce((preValue, item) => {
+      if (item.type === 'Text') {
+        preValue.textDoc.push(resolveTextClassnames(item, options))
+      }
+      if (item.type === 'MustacheTag') {
+        preValue.mustacheTagDoc.push(resolveMustacheTagClassnames(item))
+      }
+      return preValue
+    }, { textDoc: [], mustacheTagDoc: [] })
 
-      const sortResult =  classNameList.map(className => ({ className, orderIndex: ensureClassNameOrder(className, options.projectCssContent, options.projectCssOrderContent)})).sort((a, b) => {
-        const aIndex = a.orderIndex
-        const bIndex = b.orderIndex
-        if (aIndex < bIndex) {
-          return -1
-        } else if (aIndex > bIndex) {
-          return 1
-        } else {
-          return 0
-        }
-      })
-
-      const sortDoc = sortResult.reduce((preValue, item, index) => {
-        if (index !== 0) {
-          preValue.push(line, item.className)
-        } else {
-          preValue.push(item.className)
-        }
-        return preValue
-      }, [])
+    const textRowList = textDoc.reduce((preValue, list) => {
+      preValue.push(...(list.map(item => item.className)))
+      return preValue
+    }, [])
+    const sortedList = [
+      ...textRowList,
+      ...mustacheTagDoc
+    ]
+    const sortDoc = sortedList.reduce((preValue, item, index) => {
+      if (item === '' || item === undefined) return preValue
+      if (index !== 0) {
+        preValue.push(line, item)
+      } else {
+        preValue.push(item)
+      }
+      return preValue
+    }, [])
       return concat([line, node.name, '=', '"', concat(sortDoc), '"']);
     }
-  }
+}
+
+function resolveTextClassnames(textNode, options) {
+  const classNameList = classRowDataToArray(textNode.data)
+  const sortResult = classNameList.map(className => ({ className, orderIndex: ensureClassNameOrder(className, options.projectCssContent, options.projectCssOrderContent)})).sort((a, b) => {
+    const aIndex = a.orderIndex
+    const bIndex = b.orderIndex
+    if (aIndex < bIndex) {
+      return -1
+    } else if (aIndex > bIndex) {
+      return 1
+    } else {
+      return 0
+    }
+  })
+
+  return sortResult
+
+}
+
+function resolveMustacheTagClassnames(mustacheTagNode) {
+  return `{${mustacheTagNode.expression.name}}`
 }
 
 function classRowDataToArray(rowData: string) {
