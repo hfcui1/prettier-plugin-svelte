@@ -69,7 +69,7 @@ function classAttributeToArray(attribute: string) {
 }
 
 function ensureClassNameOrder(className: string, cssContent: string, cssOrderContent: string) {
-  const cssBlockReg = new RegExp(`.${className.replace(':', '\\\\:')}\\s*{(\.\*?)}`)
+  const cssBlockReg = new RegExp(`\\.${className.replace(':', '\\\\:')}\\s*{(\.\*?)}`)
   const matchResult = cssContent.match(cssBlockReg)
 
   // 非原子Css，优先级最高

@@ -104,7 +104,7 @@
   </div>
   <div class="position-body pv20 jc df jcsb aic ph20">
     <div class="data-item">
-      <div class="b f18 T1">${displayValue(positionResult.avgEntryPrice)}</div>
+      <div class="f18 b T1">${displayValue(positionResult.avgEntryPrice)}</div>
       <div class="mt6 f12 fw2 T3">{LG(lang.OpenPrice)}</div>
     </div>
     <div class="data-item">
@@ -112,7 +112,7 @@
       <div class="mt6 f12 fw2 T3">{LG(lang.PositionValue)}</div>
     </div>
     <div class="data-item">
-      <div class="sgn b f18 {generateSgnClass(positionResult.roi)}">{displayValue(positionResult.roi)}%</div>
+      <div class="sgn f18 b {generateSgnClass(positionResult.roi)}">{displayValue(positionResult.roi)}%</div>
       <div class="mt6 f12 fw2 T3">{LG(lang.ROI)}</div>
     </div>
     <div class="data-item">
@@ -120,11 +120,11 @@
       <div class="mt6 f12 fw2 T3">{LG(lang.Income)}</div>
     </div>
     <div class="data-item">
-      <div class="b f18 T1">${displayValue(positionResult.markPrice)}</div>
+      <div class="f18 b T1">${displayValue(positionResult.markPrice)}</div>
       <div class="mt6 f12 fw2 T3">{LG(lang.MarkPrice)}</div>
     </div>
     <div class="data-item">
-      <div class="b f18 T1">${displayValue(positionResult.liquidationPrice)}</div>
+      <div class="f18 b T1">${displayValue(positionResult.liquidationPrice)}</div>
       <div class="mt6 f12 fw2 T3">{LG(lang.LipPrice)}</div>
     </div>
     <div class="data-item tr">
