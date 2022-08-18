@@ -1,155 +1,135 @@
 <script>
-  import {Subject, BehaviorSubject} from 'rxjs';
-  import {switchMap} from 'rxjs/operators';
-  import {mc} from '@/core';
-  import {userApi} from '@/api';
-  import {fiatCurrency$} from './fiat-currency';
+  import {getContext} from 'svelte';
+  import {matchProduct$} from '@/modules/copy-trading/streams/basic-stream';
+  import {contractMarket24hCache__unstable$} from '@/modules/copy-trading/streams/basic-stream';
+  import {displayValue, displayPositionValue, calcCurrentPosition} from '../../../utils';
+  import lang from '../../CopyTradingListPage.lang';
 
-  const className = 'test';
+  export let position = {};
+
   const LG = getContext('LG');
-  const tabOptions = [
-    {label: LG(lang.Following), value: tabMode.follow},
-    {label: LG(lang.Recommend), value: tabMode.recommend},
-  ];
-  $: process.browser && updateCurrentTab($followingTradersState$);
+  let positionResult = {};
 
-  function updateCurrentTab(followingTradersState) {
-    const tab1 = getTabByUrl();
-    const tab2 = getTabByFollowingState(followingTradersState);
+  $: product = $matchProduct$(position.symbol) || {};
+  $: isBuySide = position.side === 'Buy';
+  $: isSellSide = position.side === 'Sell';
+  $: updatePositionResult(position, product, $contractMarket24hCache__unstable$);
 
-    copyTradeTab$.next(tab1 || tab2 || '');
-  }
-
-  function getTabByUrl() {
-    const searchT = parse(window.location.search).t;
-    return pathModeMap[searchT];
-  }
-
-  function getTabByFollowingState(followingTradersState) {
-    const {loading, total} = followingTradersState;
-    if (!loading) {
-      const {follow, recommend} = tabMode;
-      return total > 0 ? follow : recommend;
+  function updatePositionResult(position, product, contractMarket24hCacheData) {
+    if (position && product && contractMarket24hCacheData) {
+      positionResult = calcCurrentPosition(position, product, contractMarket24hCacheData || {}) || {};
     }
   }
 
-  function handleTabClickFun(tabValue) {
-    return function () {
-      copyTradeTab$.next(tabValue);
-
-      refreshList(tabValue);
-      recordTab(tabValue);
-    };
-  }
-
-  function recordTab(tabValue) {
-    history.replaceState({}, '', `${location.pathname}?t=${tabModeMap[tabValue]}`);
-  }
-
-  function refreshList(tabValue) {
-    const {follow, recommend} = tabMode;
-
-    if (tabValue === follow) {
-      followingTradersPageNum$.next(followingTradersPageNum$.getValue());
-    }
-    if (tabValue === recommend) {
-      recommendTradersPageNum$.next(recommendTradersPageNum$.getValue());
-    }
+  function generateSgnClass(num) {
+    return typeof num !== 'undefined' ? (num >= 0 ? 'plus' : 'minus') : '';
   }
 </script>
 
 <style>
-  .container {
-    background: #fdfefe;
+  .positon-head {
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    height: 44px;
   }
-  .main {
-    width: 1200px;
-    margin: 0 auto;
+  .postion-item.buy-side {
+    border: 1px solid #e1faf2;
   }
-  .menu-wrap {
-    padding-top: 17px;
+  .postion-item.sell-side {
+    border: 1px solid #feeeef;
   }
-  .menu-wrap::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -5px;
-    height: 1px;
-    background: #f2f3f6;
+  .buy-side .positon-head {
+    background: #e1faf2;
   }
-  .menu-wrap :global(.wrap) {
-    padding-left: 0;
-    padding-right: 0;
+  .sell-side .positon-head {
+    background: #feeeef;
   }
-  .menu-wrap :global(.wrap + .wrap) {
-    padding-left: 0 !important;
-    margin-left: 36px;
+
+  .ml8 {
+    margin-left: 8px;
   }
-  .menu-wrap :global(.active::after) {
-    bottom: -3px;
-    height: 3px;
+  .pv20 {
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
-  .loading-box {
-    height: 500px;
+  .cycle-type {
+    border-radius: 5px;
+    padding: 0 6px;
+    height: 20px;
+    line-height: 20px;
   }
-  .main {
-    min-height: 500px;
+  .buy-side .cycle-type {
+    background: var(--buy);
   }
-  .container :global(.pagination li) {
-    border: 1px solid #f1f2f5;
-    border-radius: 4px;
-    min-width: 30px;
-    width: auto;
-    height: 30px;
-    background: var(--B1);
-    color: var(--T4);
-    font-weight: var(--fw2);
+  .sell-side .cycle-type {
+    background: var(--sell);
   }
-  .container :global(.pagination li.active) {
-    background: #003fe6;
-    color: var(--TW);
+  .sgn {
+    color: var(--T1);
+  }
+  .sgn.plus {
+    color: #02bd84;
+  }
+  .sgn.minus {
+    color: #f24d53;
+  }
+  .data-item {
+    width: 16.66%;
   }
   @media screen and (max-width: 640px) {
-    .main {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 0 14px;
+    .position-body {
+      flex-wrap: wrap;
     }
-    .main :global(.fdr) {
-      padding: 16px 0;
+    .data-item {
+      width: 33.33%;
     }
-    .container {
-      background: transparent;
+    .data-item:nth-child(3n) {
+      text-align: right;
     }
-    .menu-wrap {
-      padding-top: 0;
+    .data-item:nth-child(3n-1) {
+      text-align: center;
+    }
+    .data-item:nth-child(n + 4) {
+      margin-top: 8px;
     }
   }
 </style>
 
-<Banner />
-<div class="container {className} {className}">
-  <main class="main">
-    <div class="menu-wrap pr df aic">
-      {#each tabOptions as tab}
-        <Tab active={$copyTradeTab$ === tab.value} on:click={handleTabClickFun(tab.value)}>
-          <div class="b f20">{tab.label}</div>
-        </Tab>
-      {/each}
+<div class="postion-item mt16 br8" class:buy-side={isBuySide} class:sell-side={isSellSide}>
+  <div class="positon-head df aic ph20">
+    <div class="cycle-type f12 fw2 TW">{LG(isBuySide ? lang.Long : lang.Short)}</div>
+    <div class="ml8 f16 fw2" class:buy={isBuySide} class:sell={isSellSide}>{positionResult.leverage || ''}</div>
+    <div class="ml8 f16 fw2">{product.symbolV2} {product.type}</div>
+    {#if positionResult.isInverse}<span class="ml8 f14 fw2 T1">Coin-M</span>{/if}
+  </div>
+  <div class="position-body pv20 jc df jcsb aic ph20">
+    <div class="data-item">
+      <div class="b f18 T1">${displayValue(positionResult.avgEntryPrice)}</div>
+      <div class="mt6 f12 fw2 T3">{LG(lang.OpenPrice)}</div>
     </div>
-
-    {#if $followingTradersState$.loading !== false}
-      <div class="jsc loading-box df aic">
-        <Spin style="" />
-      </div>
-    {/if}
-
-    <div hidden={$copyTradeTab$ !== tabMode.follow} in:fade>
-      <FollowTraders />
+    <div class="data-item">
+      <div class="f18 fw2 T1">{displayPositionValue(positionResult.value, positionResult)} {positionResult.settleCurrency || '-'}</div>
+      <div class="mt6 f12 fw2 T3">{LG(lang.PositionValue)}</div>
     </div>
-    <div hidden={$copyTradeTab$ !== tabMode.recommend} in:fade>
-      <RecommendTraders />
+    <div class="data-item">
+      <div class="sgn b f18 {generateSgnClass(positionResult.roi)}">{displayValue(positionResult.roi)}%</div>
+      <div class="mt6 f12 fw2 T3">{LG(lang.ROI)}</div>
     </div>
-  </main>
+    <div class="data-item">
+      <div class="sgn f18 fw2 {generateSgnClass(positionResult.pnl)}">{displayPositionValue(positionResult.pnl, positionResult)} {positionResult.settleCurrency || '-'}</div>
+      <div class="mt6 f12 fw2 T3">{LG(lang.Income)}</div>
+    </div>
+    <div class="data-item">
+      <div class="b f18 T1">${displayValue(positionResult.markPrice)}</div>
+      <div class="mt6 f12 fw2 T3">{LG(lang.MarkPrice)}</div>
+    </div>
+    <div class="data-item">
+      <div class="b f18 T1">${displayValue(positionResult.liquidationPrice)}</div>
+      <div class="mt6 f12 fw2 T3">{LG(lang.LipPrice)}</div>
+    </div>
+    <div class="data-item tr">
+      <div class="f18 fw2 T1">{displayPositionValue(positionResult.positionMargin, positionResult)} {positionResult.settleCurrency || '-'}</div>
+      <div class="mt6 f12 fw2 T3">{LG(lang.Margin)}</div>
+    </div>
+  </div>
 </div>

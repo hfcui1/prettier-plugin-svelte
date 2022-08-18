@@ -1,6 +1,7 @@
 import {Doc, doc, FastPath, ParserOptions} from 'prettier';
 import {AttributeNode} from '../nodes';
 import {isArray} from '../../lib/utils';
+import { getText } from '../../lib/getText'
 
 const {concat, join, line, group, indent, dedent, softline, hardline, fill, breakParent, literalline} = doc.builders;
 
@@ -11,7 +12,7 @@ export function classSortRule(node: AttributeNode, print: (_path: FastPath) => D
         preValue.textDoc.push(resolveTextClassnames(item, options))
       }
       if (item.type === 'MustacheTag') {
-        preValue.mustacheTagDoc.push(resolveMustacheTagClassnames(item))
+        preValue.mustacheTagDoc.push(resolveMustacheTagClassnames(item, options))
       }
       return preValue
     }, { textDoc: [], mustacheTagDoc: [] })
@@ -55,8 +56,8 @@ function resolveTextClassnames(textNode, options) {
 
 }
 
-function resolveMustacheTagClassnames(mustacheTagNode) {
-  return `{${mustacheTagNode.expression.name}}`
+function resolveMustacheTagClassnames(mustacheTagNode, options) {
+  return getText(mustacheTagNode, options) || ''
 }
 
 function classRowDataToArray(rowData: string) {
