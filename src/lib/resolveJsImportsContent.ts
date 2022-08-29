@@ -11,7 +11,10 @@ init.then(() => inited = true)
 
 export function resolveJsImportsContent(source: string, options: ParserOptions) {
   if (!inited) return source
+
   const imports = parse(source)[0];
+  if (!(imports && imports.length)) return source
+
   const newImports = importSort(imports, source, options)
   const importStr = concatStr(newImports, options.semi)
   const magicString = new MagicString(source)

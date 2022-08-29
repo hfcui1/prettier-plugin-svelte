@@ -48,10 +48,12 @@ export function snipScriptAndStyleTagContent(source: string, options: ParserOpti
             }
             if (tagName === 'script' && inited) {
                 const imports = parse(content)[0]
-                const newImports = importSort(imports, content, options)
-                const importStr = concatStr(newImports)
-                const magicString = new MagicString(content)
-                newContentStr = magicString.overwrite(imports[0].ss, imports[imports.length - 1].se, importStr).toString()
+                if (imports && imports.length) {
+                    const newImports = importSort(imports, content, options)
+                    const importStr = concatStr(newImports)
+                    const magicString = new MagicString(content)
+                    newContentStr = magicString.overwrite(imports[0].ss, imports[imports.length - 1].se, importStr).toString()
+                }
             }
             const encodedContent = Buffer.from(newContentStr).toString('base64');
             const newContent = `<${tagName}${attributes} ${snippedTagContentAttribute}="${encodedContent}">${placeholder}</${tagName}>`;
